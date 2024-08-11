@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 class AlarmRepositoryClass (private val alarmDao : AlarmDao) : AlarmRepository {
     override fun getAllAlarmStream():Flow<List<Alarm>> = alarmDao.getAllAlarms()
 
-    override fun getAlarmStream(id : Int) : Flow<Alarm> = alarmDao.getAlarm(id)
+    override fun getAlarmStream(id : Long) : Flow<Alarm> = alarmDao.getAlarm(id)
 
     override suspend fun insertItem(alarm: Alarm) = alarmDao.insert(alarm)
 

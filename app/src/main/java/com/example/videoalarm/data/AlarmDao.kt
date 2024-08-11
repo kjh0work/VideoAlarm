@@ -24,7 +24,7 @@ interface AlarmDao {
     fun getAllAlarms(): Flow<List<Alarm>>
 
     @Query("SELECT * FROM Alarm WHERE id = :id")
-    fun getAlarm(id : Int) : Flow<Alarm>
+    fun getAlarm(id : Long) : Flow<Alarm>
 
 
 }
