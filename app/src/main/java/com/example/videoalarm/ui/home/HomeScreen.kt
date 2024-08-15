@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -110,7 +111,12 @@ fun HomeScreen(
             VideoAlarmTopAppBar(
                 title = stringResource(id = HomeDestination.titleRes),
                 canNavigateBack = false,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                editButtonClick = {
+                    IconButton(onClick = { viewModel.toggleEditMode() }) {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -132,7 +138,11 @@ fun HomeScreen(
         HomeBody(
             modifier = modifier.fillMaxSize(),
             alarmList = homeUiState.alarmList,
-            contentPadding = innerPadding
+            contentPadding = innerPadding,
+            switchChange = {alarm,switchChanged ->
+                           viewModel.updateAlarm(alarm.copy(isActive = switchChanged))
+            },
+            isEditMode = viewModel.isEditMode
         )
     }
 }
@@ -141,7 +151,9 @@ fun HomeScreen(
 fun HomeBody(
     alarmList: List<Alarm>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    switchChange: (Alarm, Boolean) -> Unit,
+    isEditMode: Boolean
 ){
     if(alarmList.isEmpty()){
         Text(text = stringResource(id = R.string.no_alarm))
@@ -149,7 +161,9 @@ fun HomeBody(
     else{
         AlarmList(
             alarmList = alarmList,
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
+            switchChange = switchChange,
+            isEditMode = isEditMode
         )
     }
 }
@@ -158,7 +172,9 @@ fun HomeBody(
 fun AlarmList(
     modifier: Modifier = Modifier,
     alarmList: List<Alarm>,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    switchChange: (Alarm, Boolean) -> Unit,
+    isEditMode: Boolean
 ){
     LazyColumn(
         modifier = modifier,
@@ -169,7 +185,9 @@ fun AlarmList(
                 item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
-                    .clickable { }
+                    .clickable { },
+                switchChange = switchChange,
+                isEditMode = isEditMode
             )
         }
     }
@@ -180,11 +198,11 @@ fun AlarmList(
 @Composable
 fun AlarmItem(
     item: Alarm,
-    modifier: Modifier
+    modifier: Modifier,
+    switchChange: (Alarm, Boolean) -> Unit,
+    isEditMode: Boolean
 ){
-    var checked by remember {
-        mutableStateOf(true)
-    }
+
     Card(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 4.dp),
         onClick = {}
@@ -193,6 +211,10 @@ fun AlarmItem(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
             ) {
+            if(isEditMode){
+                //Checkbox(checked = , onCheckedChange = )
+            }
+
             Column(
                 modifier = Modifier
                     .padding(start = 3.dp)
@@ -204,7 +226,9 @@ fun AlarmItem(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().weight(0.6f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.6f),
                 verticalAlignment = Alignment.CenterVertically
             ) {//days, isActive
                 if(item.videoPath.isNotEmpty()){
@@ -222,7 +246,7 @@ fun AlarmItem(
                 }
 
                 Switch(
-                    checked = checked, onCheckedChange = {checked = it},
+                    checked = item.isActive, onCheckedChange = {switchChange(item, it)},
                     modifier = Modifier.padding(end = 10.dp)
                     )
             }
@@ -230,118 +254,29 @@ fun AlarmItem(
     }
 
 }
-/*
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ReplyEmailListItem(
-    email: Email,
-    navigateToDetail: (Long) -> Unit,
-    toggleSelection: (Long) -> Unit,
-    modifier: Modifier = Modifier,
-    isOpened: Boolean = false,
-    isSelected: Boolean = false,
-) {
-    Card(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .semantics { selected = isSelected }
-            .clip(CardDefaults.shape)
-            .combinedClickable(
-                onClick = { navigateToDetail(email.id) },
-                onLongClick = { toggleSelection(email.id) }
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-            else if (isOpened) MaterialTheme.colorScheme.secondaryContainer
-            else MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                val clickModifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { toggleSelection(email.id) }
-                AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
-                    if (selected) {
-                        SelectedProfileImage(clickModifier)
-                    } else {
-                        ReplyProfileImage(
-                            email.sender.avatar,
-                            email.sender.fullName,
-                            clickModifier
-                        )
-                    }
-                }
 
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = email.sender.firstName,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    Text(
-                        text = email.createdAt,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
-                IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.StarBorder,
-                        contentDescription = "Favorite",
-                        tint = MaterialTheme.colorScheme.outline
-                    )
-                }
-            }
 
-            Text(
-                text = email.subject,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-            )
-            Text(
-                text = email.body,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-*/
-
-@Preview
-@Composable
-fun AlarmCardPreview(){
-    VideoAlarmTheme {
-        AlarmItem(
-            item = Alarm(1L,"test alarm",LocalDateTime.now().format(DateTimeFormatter.ofPattern("a HH:MM")),true,"월화수",""),
-            modifier = Modifier
-        )
-    }
-}
-
-@Preview(name = "has video")
-@Composable
-fun AlarmCardPreview2(){
-    VideoAlarmTheme {
-        AlarmItem(
-            item = Alarm(1L,"test alarm",LocalTime.now().format(DateTimeFormatter.ofPattern("a hh:mm")),true,"월화수","asdgasdg"),
-            modifier = Modifier
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun AlarmCardPreview(){
+//    VideoAlarmTheme {
+//        AlarmItem(
+//            item = Alarm(1L,"test alarm",LocalDateTime.now().format(DateTimeFormatter.ofPattern("a HH:MM")),true,"월화수",""),
+//            modifier = Modifier,
+//            isEditMode = false
+//        )
+//    }
+//}
+//
+//@Preview(name = "has video")
+//@Composable
+//fun AlarmCardPreview2(){
+//    VideoAlarmTheme {
+//        AlarmItem(
+//            item = Alarm(1L,"test alarm",LocalTime.now().format(DateTimeFormatter.ofPattern("a hh:mm")),true,"월화수","asdgasdg"),
+//            modifier = Modifier,
+//            isEditMode = true
+//        )
+//    }
+//}
 

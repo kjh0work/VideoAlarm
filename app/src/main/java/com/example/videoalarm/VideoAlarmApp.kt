@@ -1,7 +1,9 @@
 package com.example.videoalarm
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,7 +32,8 @@ fun VideoAlarmTopAppBar(
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateUp: () -> Unit = {}
+    navigateUp: () -> Unit = {},
+    editButtonClick : @Composable() (RowScope.() -> Unit) = {}
 ){
     CenterAlignedTopAppBar(
         title = { Text(text = title) },
@@ -42,8 +45,8 @@ fun VideoAlarmTopAppBar(
                 }
             }
         },
-        //colors =
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        actions = editButtonClick
     )
 }
 
