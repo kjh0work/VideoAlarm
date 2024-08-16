@@ -1,5 +1,6 @@
 package com.example.videoalarm.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -28,8 +29,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -51,6 +54,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -105,6 +109,10 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val homeUiState by viewModel.homeUiState.collectAsState()
 
+    BackHandler(enabled = viewModel.isEditMode) {
+        viewModel.changeEditMode()
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -113,7 +121,7 @@ fun HomeScreen(
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 editButtonClick = {
-                    IconButton(onClick = { viewModel.toggleEditMode() }) {
+                    IconButton(onClick = { viewModel.changeEditMode() }) {
                         Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
                     }
                 }
@@ -133,6 +141,20 @@ fun HomeScreen(
                     contentDescription = "go to AlarmEntry Screen"
                 )
             }
+        },
+        bottomBar = {
+            if(viewModel.checkedAlarmList.isNotEmpty()){
+                BottomAppBar{
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        IconButton(onClick = { viewModel.deleteAlarm() }) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "delete alarms")
+                        }
+                    }
+                }
+            }
         }
     ) { innerPadding ->
         HomeBody(
@@ -142,7 +164,12 @@ fun HomeScreen(
             switchChange = {alarm,switchChanged ->
                            viewModel.updateAlarm(alarm.copy(isActive = switchChanged))
             },
-            isEditMode = viewModel.isEditMode
+            isEditMode = viewModel.isEditMode,
+            editCheck = { alarm, b ->
+                if(b) viewModel.checkedAlarmList.add(alarm)
+                else viewModel.checkedAlarmList.remove(alarm)
+            },
+            checkedAlarmList = viewModel.checkedAlarmList
         )
     }
 }
@@ -153,7 +180,9 @@ fun HomeBody(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     switchChange: (Alarm, Boolean) -> Unit,
-    isEditMode: Boolean
+    isEditMode: Boolean,
+    editCheck : (Alarm, Boolean) -> Unit,
+    checkedAlarmList : SnapshotStateList<Alarm>
 ){
     if(alarmList.isEmpty()){
         Text(text = stringResource(id = R.string.no_alarm))
@@ -163,7 +192,9 @@ fun HomeBody(
             alarmList = alarmList,
             contentPadding = contentPadding,
             switchChange = switchChange,
-            isEditMode = isEditMode
+            isEditMode = isEditMode,
+            editCheck = editCheck,
+            checkedAlarmList = checkedAlarmList
         )
     }
 }
@@ -174,7 +205,9 @@ fun AlarmList(
     alarmList: List<Alarm>,
     contentPadding: PaddingValues,
     switchChange: (Alarm, Boolean) -> Unit,
-    isEditMode: Boolean
+    isEditMode: Boolean,
+    editCheck : (Alarm, Boolean) -> Unit,
+    checkedAlarmList : SnapshotStateList<Alarm>
 ){
     LazyColumn(
         modifier = modifier,
@@ -187,7 +220,9 @@ fun AlarmList(
                     .padding(dimensionResource(id = R.dimen.padding_small))
                     .clickable { },
                 switchChange = switchChange,
-                isEditMode = isEditMode
+                isEditMode = isEditMode,
+                editCheck = editCheck,
+                checkedAlarmList = checkedAlarmList
             )
         }
     }
@@ -200,7 +235,9 @@ fun AlarmItem(
     item: Alarm,
     modifier: Modifier,
     switchChange: (Alarm, Boolean) -> Unit,
-    isEditMode: Boolean
+    isEditMode: Boolean,
+    editCheck : (Alarm, Boolean) -> Unit,
+    checkedAlarmList : SnapshotStateList<Alarm>
 ){
 
     Card(
@@ -212,7 +249,7 @@ fun AlarmItem(
             verticalAlignment = Alignment.CenterVertically
             ) {
             if(isEditMode){
-                //Checkbox(checked = , onCheckedChange = )
+                Checkbox(checked = checkedAlarmList.contains(item), onCheckedChange = {editCheck(item, it)})
             }
 
             Column(

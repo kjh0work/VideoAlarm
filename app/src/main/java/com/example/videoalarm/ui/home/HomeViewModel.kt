@@ -1,6 +1,7 @@
 package com.example.videoalarm.ui.home
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,8 @@ class HomeViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
     var isEditMode by mutableStateOf(false)
         private set
 
+    val checkedAlarmList = mutableStateListOf<Alarm>()
+
     //DB와 연동하는 것이기 때문에 StateOf가 아닌 StateFlow를 사용
     val homeUiState : StateFlow<HomeUiState> =
         alarmRepository.getAllAlarmStream().map { HomeUiState(it) }
@@ -31,14 +34,24 @@ class HomeViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
         private const val TIMEOUT_MILLIS = 5000L;
     }
 
-    fun toggleEditMode() {
-        isEditMode = true
+    fun changeEditMode() {
+        isEditMode = !isEditMode
     }
 
     fun updateAlarm(updatedAlarm : Alarm){
         viewModelScope.launch {
             alarmRepository.updateItem(updatedAlarm)
         }
+    }
+
+    fun deleteAlarm() {
+        for(alarm:Alarm in checkedAlarmList){
+            viewModelScope.launch {
+                alarmRepository.deleteItem(alarm)
+            }
+        }
+        checkedAlarmList.clear()
+        changeEditMode()
     }
 
 }
