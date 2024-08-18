@@ -1,34 +1,40 @@
 package com.example.videoalarm.ui.alarm
 
 import android.util.Log
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
+import kotlinx.coroutines.launch
 
 class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
-//
 
     var alarmEntryUiState by mutableStateOf(AlarmEntryUiState())
         private set
 
-
-    suspend fun saveAlarm() {
-        alarmRepository.insertItem(alarmEntryUiState.alarmDetail.toAlarm())
-        //Log.d("Alarm name",alarmEntryUiState.alarmDetail.toAlarm().name)
+    fun saveAlarm() {
+        viewModelScope.launch {
+            alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
+        }
     }
 
+    fun updateAlarmDetail(alarmDetails: AlarmDetails){
+        alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmDetails)
+    }
 
-    private fun validateInput(alarmDetail:AlarmDetails = alarmEntryUiState.alarmDetail) : Boolean{
+    private fun validateInput(alarmDetail:AlarmDetails = alarmEntryUiState.alarmDetails) : Boolean{
         //현재 알람 설정 특성상 기본 설정이 있고,
         //그 이외에 값은 체크 값이기 때문에 상관 없다.
         return true;
     }
 
     suspend fun saveDummyAlarm() {
-        alarmRepository.insertItem(alarmEntryUiState.alarmDetail.toAlarmDummy())
+        alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarmDummy())
     }
 
 
@@ -59,7 +65,7 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
  */
 data class AlarmEntryUiState(
     val isEntryValid : Boolean = false,
-    val alarmDetail : AlarmDetails = AlarmDetails()
+    val alarmDetails : AlarmDetails = AlarmDetails()
 )
 
 data class AlarmDetails(

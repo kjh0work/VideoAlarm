@@ -259,7 +259,6 @@ fun AlarmItem(
             ) { //name, time
                 Text(text = item.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 3.dp))
                 Text(text = item.localTime, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
-                //시간 표시하는 것 포멧 필요
             }
 
             Row(
