@@ -1,6 +1,5 @@
 package com.example.videoalarm.ui.alarm
 
-import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
@@ -33,22 +32,9 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
         return true;
     }
 
-    suspend fun saveDummyAlarm() {
-        alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarmDummy())
-    }
-
-
 }
 
-fun AlarmDetails.toAlarmDummy() : Alarm = Alarm(
-    id = id,
-    name = "wake up",
-    localTime = "오전 10:30",
-    isActive = true,
-    daysOfWeek = "월수금",
-    videoPath = "video/path"
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 fun AlarmDetails.toAlarm() : Alarm = Alarm(
     id = id,
     name = name,
@@ -63,15 +49,15 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
  * 1. 사용자가 입력한 값이 올바른 값인지 판별 : isEntryValid
  * 2. 사용자가 입력한 값 : AlarmDetails
  */
-data class AlarmEntryUiState(
+data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isEntryValid : Boolean = false,
     val alarmDetails : AlarmDetails = AlarmDetails()
 )
 
-data class AlarmDetails(
+data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long = 0,
     val name: String = "default",
-    val localTime: String = "",
+    val localTime: TimePickerState = TimePickerState(6,0,false),
     val isActive : Boolean = false,
     val daysOfWeek : String = "",
     val videoPath : String = ""

@@ -69,13 +69,7 @@ fun AlarmEntryScreen(
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
                     }
                     IconButton(onClick = {
-                        val minute : String = if(timePickerState.minute < 10) "0${timePickerState.minute}" else "${timePickerState.minute}"
-                        val localtime : String =
-                            if(timePickerState.hour == 12) "PM ${timePickerState.hour}:$minute"
-                            else if(timePickerState.hour == 0) "AM 00:$minute"
-                            else if(timePickerState.hour > 12) "PM ${timePickerState.hour-12}:$minute"
-                            else "AM ${timePickerState.hour}:$minute"
-                        viewModel.updateAlarmDetail(viewModel.alarmEntryUiState.alarmDetails.copy(localTime = localtime))
+                        viewModel.updateAlarmDetail(viewModel.alarmEntryUiState.alarmDetails.copy(localTime = timePickerState))
                         viewModel.saveAlarm()
                         navigateUp()
                     }, modifier = Modifier.weight(0.5f)) {
@@ -105,9 +99,8 @@ fun AlarmEntryBody(
         modifier = modifier.fillMaxWidth(), //상위 modifier를 사용하면 topAppbor를 제외한 범위
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TimePick(
-            timePickerState = timePickerState
-        )
+        TimePick(timePickerState = timePickerState)
+        WeekPick()
         ResourceSet(
 
         )
@@ -119,7 +112,6 @@ fun AlarmEntryBody(
 fun TimePick(
     timePickerState: TimePickerState
 ){
-
     Box {
        TimePicker(
            state = timePickerState,
@@ -129,6 +121,10 @@ fun TimePick(
             )
            )
     }
+}
+
+@Composable
+fun WeekPick(){
 
 }
 

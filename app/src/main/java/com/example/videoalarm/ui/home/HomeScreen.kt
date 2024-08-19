@@ -258,7 +258,7 @@ fun AlarmItem(
                     .weight(0.4f)
             ) { //name, time
                 Text(text = item.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 3.dp))
-                Text(text = item.localTime, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
+                Text(text = "${item.localTime.hour}:${item.localTime.minute}", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
             }
 
             Row(
@@ -291,28 +291,4 @@ fun AlarmItem(
 
 }
 
-
-//@Preview
-//@Composable
-//fun AlarmCardPreview(){
-//    VideoAlarmTheme {
-//        AlarmItem(
-//            item = Alarm(1L,"test alarm",LocalDateTime.now().format(DateTimeFormatter.ofPattern("a HH:MM")),true,"월화수",""),
-//            modifier = Modifier,
-//            isEditMode = false
-//        )
-//    }
-//}
-//
-//@Preview(name = "has video")
-//@Composable
-//fun AlarmCardPreview2(){
-//    VideoAlarmTheme {
-//        AlarmItem(
-//            item = Alarm(1L,"test alarm",LocalTime.now().format(DateTimeFormatter.ofPattern("a hh:mm")),true,"월화수","asdgasdg"),
-//            modifier = Modifier,
-//            isEditMode = true
-//        )
-//    }
-//}
 
