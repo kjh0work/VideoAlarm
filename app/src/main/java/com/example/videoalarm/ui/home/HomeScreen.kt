@@ -264,7 +264,7 @@ fun AlarmItem(
                     .weight(0.4f)
             ) { //name, time
                 Text(text = item.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 3.dp))
-                Text(text = "${item.localTime.hour}:${item.localTime.minute}", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
+                Text(text = "${item.clockTime.hour}:${item.clockTime.minute}", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
             }
 
             Row(

@@ -14,7 +14,7 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long,
     val name: String,
     @TypeConverters(TimeConverters::class)
-    val localTime: TimePickerState,
+    val clockTime: TimePickerState,
     val isActive: Boolean,
     val daysOfWeek: String,
     val videoPath: String

@@ -21,7 +21,7 @@ interface AlarmDao {
     suspend fun delete(alarm: Alarm)
 
 
-    @Query("SELECT * FROM Alarm ORDER BY localTime ASC")
+    @Query("SELECT * FROM Alarm ORDER BY clockTime ASC")
     fun getAllAlarms(): Flow<List<Alarm>>
 
     @Query("SELECT * FROM Alarm WHERE id = :id")

@@ -38,7 +38,7 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
 fun AlarmDetails.toAlarm() : Alarm = Alarm(
     id = id,
     name = name,
-    localTime = localTime,
+    clockTime = clockTime,
     isActive = isActive,
     daysOfWeek = daysOfWeek,
     videoPath = videoPath
@@ -57,7 +57,7 @@ data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor
 data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long = 0,
     val name: String = "default",
-    val localTime: TimePickerState = TimePickerState(6,0,false),
+    val clockTime: TimePickerState = TimePickerState(6,0,false),
     val isActive : Boolean = false,
     val daysOfWeek : String = "",
     val videoPath : String = ""

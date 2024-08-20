@@ -69,7 +69,7 @@ fun AlarmEntryScreen(
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
                     }
                     IconButton(onClick = {
-                        viewModel.updateAlarmDetail(viewModel.alarmEntryUiState.alarmDetails.copy(localTime = timePickerState))
+                        viewModel.updateAlarmDetail(viewModel.alarmEntryUiState.alarmDetails.copy(clockTime = timePickerState))
                         viewModel.saveAlarm()
                         navigateUp()
                     }, modifier = Modifier.weight(0.5f)) {
