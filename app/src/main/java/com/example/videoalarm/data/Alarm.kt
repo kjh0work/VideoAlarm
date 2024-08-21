@@ -18,31 +18,36 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isActive: Boolean,
     val daysOfWeek: String,
     val videoPath: String
-)
+){
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun getTime() : String{
+        val minute = if (clockTime.minute < 10) "0${clockTime.minute}" else "${clockTime.minute}"
+        return if (clockTime.hour == 12) "PM ${clockTime.hour}:$minute"
+        else if (clockTime.hour == 0) "AM 00:$minute"
+        else if (clockTime.hour < 12) "AM ${clockTime.hour}:$minute"
+        else "PM ${clockTime.hour - 12}:$minute"
+    }
+}
 
 class TimeConverters{
     @OptIn(ExperimentalMaterial3Api::class)
     @TypeConverter
-    fun fromLocalTime(value: TimePickerState): String {
-        return "${value.hour}:${value.minute}"
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @TypeConverter
-    fun stringToLocalTime(time: String): TimePickerState {
+    fun fromClockTime(time: String): TimePickerState {
         val times = time.split(":")
         return TimePickerState(
             times[0].toInt(),
             times[1].toInt(),
             false
         )
+
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @TypeConverter
+    fun stringToClockTime(value: TimePickerState): String {
+        return "${value.hour}:${value.minute}"
     }
 
 
 }
 
-//        val minute = if (time.minute < 10) "0${time.minute}" else "${time.minute}"
-//        return if (time.hour == 12) "PM ${time.hour}:$minute"
-//        else if (time.hour == 0) "AM 00:$minute"
-//        else if (time.hour < 12) "AM ${time.hour}:$minute"
-//        else "PM ${time.hour - 12}:$minute"
