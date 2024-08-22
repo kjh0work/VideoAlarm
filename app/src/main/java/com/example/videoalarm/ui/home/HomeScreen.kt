@@ -197,7 +197,7 @@ fun AlarmList(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun AlarmItem(
     item: Alarm,
@@ -240,13 +240,13 @@ fun AlarmItem(
                         modifier = Modifier.weight(0.4f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = item.daysOfWeek)
+                        Text(text = item.getDays())
                         Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail",
                             )
                     }
                 }
                 else{
-                    Text(text = item.daysOfWeek, modifier = Modifier.weight(0.4f), textAlign = TextAlign.Center)
+                    Text(text = item.getDays(), modifier = Modifier.weight(0.4f), textAlign = TextAlign.Center)
                 }
 
                 Switch(

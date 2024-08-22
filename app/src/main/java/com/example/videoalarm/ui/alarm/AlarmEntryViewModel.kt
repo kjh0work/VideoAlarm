@@ -5,6 +5,7 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.videoalarm.data.Alarm
@@ -32,6 +33,16 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
         return true;
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateDaysOfWeek(day: Int) {
+        val list = alarmEntryUiState.alarmDetails.daysOfWeek.toMutableStateList()
+        list[day] = !list[day]
+
+        alarmEntryUiState = alarmEntryUiState.copy(
+            alarmDetails = alarmEntryUiState.alarmDetails.copy(daysOfWeek = list)
+        )
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +62,7 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
  */
 data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isEntryValid : Boolean = false,
-    val alarmDetails : AlarmDetails = AlarmDetails()
+    val alarmDetails : AlarmDetails = AlarmDetails(),
 )
 
 data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
@@ -59,6 +70,6 @@ data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val name: String = "default",
     val clockTime: TimePickerState = TimePickerState(6,0,false),
     val isActive : Boolean = false,
-    val daysOfWeek : String = "",
+    val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
     val videoPath : String = ""
 )

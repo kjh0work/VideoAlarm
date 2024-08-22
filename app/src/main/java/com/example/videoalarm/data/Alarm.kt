@@ -16,7 +16,8 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     @TypeConverters(TimeConverters::class)
     val clockTime: TimePickerState,
     val isActive: Boolean,
-    val daysOfWeek: String,
+    @TypeConverters(DaysOfWeekConverters::class)
+    val daysOfWeek: MutableList<Boolean>,
     val videoPath: String
 ){
     @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +27,37 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
         else if (clockTime.hour == 0) "AM 00:$minute"
         else if (clockTime.hour < 12) "AM ${clockTime.hour}:$minute"
         else "PM ${clockTime.hour - 12}:$minute"
+    }
+
+    fun getDays(): String {
+        var str : String = ""
+        for(b in daysOfWeek){
+            str = if(b) str.plus("1")
+            else str.plus("0")
+        }
+        return str
+    }
+}
+
+class DaysOfWeekConverters{
+    @TypeConverter
+    fun fromDaysOfWeek(days: String) : MutableList<Boolean>{
+        val list = mutableListOf(false,false,false,false,false,false,false)
+        for(i in days.indices){
+            val ch = days[i]
+            if(ch == '1') list[i] = true
+        }
+        return list
+    }
+
+    @TypeConverter
+    fun MutableListToDaysOfWeek(list: MutableList<Boolean>) : String {
+        var str : String = ""
+        for(b in list){
+            str = if(b) str.plus("1")
+                  else str.plus("0")
+        }
+        return str
     }
 }
 
@@ -39,15 +71,12 @@ class TimeConverters{
             times[1].toInt(),
             false
         )
-
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @TypeConverter
-    fun stringToClockTime(value: TimePickerState): String {
+    fun TimePickerStateToClockTime(value: TimePickerState): String {
         return "${value.hour}:${value.minute}"
     }
-
-
 }
 
