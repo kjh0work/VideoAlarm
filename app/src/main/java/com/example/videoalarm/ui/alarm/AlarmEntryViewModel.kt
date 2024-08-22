@@ -69,7 +69,7 @@ data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long = 0,
     val name: String = "default",
     val clockTime: TimePickerState = TimePickerState(6,0,false),
-    val isActive : Boolean = false,
+    val isActive : Boolean = true,
     val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
     val videoPath : String = ""
 )
