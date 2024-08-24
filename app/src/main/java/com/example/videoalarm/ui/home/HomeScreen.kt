@@ -40,16 +40,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.data.Alarm
+import com.example.videoalarm.daysList_en
 import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
 
@@ -149,7 +156,9 @@ fun HomeBody(
 ){
     if(alarmList.isEmpty()){
         Box(
-            modifier = modifier.padding(contentPadding).fillMaxWidth(),
+            modifier = modifier
+                .padding(contentPadding)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ){
             Text(text = stringResource(id = R.string.no_alarm))
@@ -223,7 +232,7 @@ fun AlarmItem(
             Column(
                 modifier = Modifier
                     .padding(start = 3.dp)
-                    .weight(0.4f)
+                    .weight(2f)
             ) { //name, time
                 Text(text = item.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 3.dp))
                 Text(text = item.getTime(), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(bottom = 3.dp))
@@ -232,26 +241,22 @@ fun AlarmItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.6f),
+                    .weight(3f),
                 verticalAlignment = Alignment.CenterVertically
             ) {//days, isActive
-                if(item.videoPath.isNotEmpty()){
-                    Column(
-                        modifier = Modifier.weight(0.4f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = item.getDays())
-                        Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail",
-                            )
+                Column(
+                    modifier = Modifier.weight(2f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ShowDaysOfWeek(item.daysOfWeek)
+                    if(item.videoPath.isNotEmpty()){
+                        Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail")
                     }
-                }
-                else{
-                    Text(text = item.getDays(), modifier = Modifier.weight(0.4f), textAlign = TextAlign.Center)
                 }
 
                 Switch(
                     checked = item.isActive, onCheckedChange = {switchChange(item, it)},
-                    modifier = Modifier.padding(end = 10.dp)
+                    modifier = Modifier.padding(start=5.dp)
                     )
             }
         }
@@ -259,4 +264,19 @@ fun AlarmItem(
 
 }
 
+@Composable
+fun ShowDaysOfWeek(week : MutableList<Boolean>, modifier: Modifier = Modifier){
+
+    Row(
+        //modifier = modifier.fillMaxWidth()
+    ) {
+        for( ind in 0..6){
+            Text(text = stringResource(id = daysList_en[ind]),
+                color = if(week[ind]) MaterialTheme.colorScheme.secondary else Color.Black,
+                modifier = Modifier.padding(start = 5.dp).weight(1f),
+                //fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7
+            )
+        }
+    }
+}
 
