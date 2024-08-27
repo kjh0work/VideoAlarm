@@ -1,5 +1,7 @@
 package com.example.videoalarm.ui.alarm
 
+import androidx.compose.material3.CalendarLocale
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
@@ -43,6 +45,18 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
         )
     }
 
+    fun updateOpenDatePickDialog() {
+        alarmEntryUiState = alarmEntryUiState.copy(openDatePickDialog = !alarmEntryUiState.openDatePickDialog)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun clearSelectedDate(){
+        alarmEntryUiState = alarmEntryUiState.copy(
+            alarmDetails = alarmEntryUiState.alarmDetails.copy(
+                date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null)
+            ))
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +64,7 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
     id = id,
     name = name,
     clockTime = clockTime,
+    date = date,
     isActive = isActive,
     daysOfWeek = daysOfWeek,
     videoPath = videoPath
@@ -63,12 +78,14 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
 data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isEntryValid : Boolean = false,
     val alarmDetails : AlarmDetails = AlarmDetails(),
+    val openDatePickDialog : Boolean = false
 )
 
 data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long = 0,
     val name: String = "default",
     val clockTime: TimePickerState = TimePickerState(6,0,false),
+    val date: DatePickerState = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null),
     val isActive : Boolean = true,
     val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
     val videoPath : String = ""

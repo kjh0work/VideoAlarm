@@ -1,7 +1,11 @@
 package com.example.videoalarm.data
 
+import androidx.compose.material3.CalendarLocale
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.rememberDatePickerState
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -15,6 +19,8 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     val name: String,
     @TypeConverters(TimeConverters::class)
     val clockTime: TimePickerState,
+    @TypeConverters(DateConverters::class)
+    val date: DatePickerState,
     val isActive: Boolean,
     @TypeConverters(DaysOfWeekConverters::class)
     val daysOfWeek: MutableList<Boolean>,
@@ -36,6 +42,18 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
             else str.plus("0")
         }
         return str
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+class DateConverters{
+    @TypeConverter
+    fun fromDate(date: Long) : DatePickerState{
+        return DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = if(date == 0L) null else date)
+    }
+
+    @TypeConverter
+    fun DatePickerStateToDate(datePickerState: DatePickerState) : Long {
+        return datePickerState.selectedDateMillis ?: 0L
     }
 }
 

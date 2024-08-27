@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -59,6 +60,8 @@ import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.daysList_en
 import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 object HomeDestination : NavigationDestination {
     override val route: String
@@ -207,6 +210,7 @@ fun AlarmList(
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmItem(
     item: Alarm,
@@ -248,7 +252,8 @@ fun AlarmItem(
                     modifier = Modifier.weight(2f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ShowDaysOfWeek(item.daysOfWeek)
+                    if(item.date.selectedDateMillis != null) ShowDate(date = item.date)
+                    else ShowDaysOfWeek(item.daysOfWeek)
                     if(item.videoPath.isNotEmpty()){
                         Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail")
                     }
@@ -266,17 +271,31 @@ fun AlarmItem(
 
 @Composable
 fun ShowDaysOfWeek(week : MutableList<Boolean>, modifier: Modifier = Modifier){
-
     Row(
         //modifier = modifier.fillMaxWidth()
     ) {
         for( ind in 0..6){
             Text(text = stringResource(id = daysList_en[ind]),
                 color = if(week[ind]) MaterialTheme.colorScheme.secondary else Color.Black,
-                modifier = Modifier.padding(start = 5.dp).weight(1f),
+                modifier = Modifier
+                    .padding(start = 5.dp)
+                    .weight(1f),
                 //fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShowDate (date: DatePickerState, modifier: Modifier = Modifier){
+    val dateString =
+        if(date.selectedDateMillis == null) "No Date"
+        else{
+            val format = DateFormat.getDateInstance().format(date.selectedDateMillis)
+            format
+        }
+    Row {
+        Text(text = dateString)
+    }
+}
