@@ -48,6 +48,7 @@ import com.example.videoalarm.daysList_en
 import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
 import java.text.DateFormat
+import java.util.Calendar
 
 object AlarmEntryDestination : NavigationDestination{
     override val route: String
@@ -66,13 +67,6 @@ fun AlarmEntryScreen(
 ){
     val coroutineScope = rememberCoroutineScope()
 
-    //timePickerState.hour는 24시 기준으로 출력된다.
-    val timePickerState = rememberTimePickerState(
-        initialHour = 6,
-        initialMinute = 0,
-        is24Hour = false
-    )
-
     Scaffold (
         topBar = {VideoAlarmTopAppBar(title = stringResource(id = R.string.alarmEntry), canNavigateBack = true,
             navigateUp = navigateUp)},
@@ -86,7 +80,7 @@ fun AlarmEntryScreen(
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
                     }
                     IconButton(onClick = {
-                        viewModel.updateAlarmDetail(viewModel.alarmEntryUiState.alarmDetails.copy(clockTime = timePickerState))
+                        viewModel.dateNullCheck()
                         viewModel.saveAlarm()
                         navigateUp()
                     }, modifier = Modifier.weight(0.5f)) {
@@ -99,7 +93,7 @@ fun AlarmEntryScreen(
         innerPadding ->
         AlarmEntryBody(
             modifier = Modifier.padding(innerPadding),
-            timePickerState = timePickerState,
+            timePickerState = viewModel.alarmEntryUiState.alarmDetails.clockTime,
             isClicked = viewModel.alarmEntryUiState.alarmDetails.daysOfWeek,
             daysPick = {
                 viewModel.updateDaysOfWeek(it)
@@ -177,8 +171,15 @@ fun DatePick(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH)+1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
         if(datePickerState.selectedDateMillis == null){
-            Text(text = "기본은 내일, 선택된 날짜 출력", modifier = Modifier.padding(start = 10.dp))
+            if(hour < 6) Text(text = "${month}월 ${day}일", modifier = Modifier.padding(start = 10.dp))
+            else Text(text = "${month}월 ${day+1}일", modifier = Modifier.padding(start = 10.dp))
         }
         else Text(text = DateFormat.getDateInstance().format(datePickerState.selectedDateMillis).toString(), modifier = Modifier.padding(start = 10.dp))
 

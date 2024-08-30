@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
 
@@ -25,9 +26,6 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
         }
     }
 
-    fun updateAlarmDetail(alarmDetails: AlarmDetails){
-        alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmDetails)
-    }
 
     private fun validateInput(alarmDetail:AlarmDetails = alarmEntryUiState.alarmDetails) : Boolean{
         //현재 알람 설정 특성상 기본 설정이 있고,
@@ -55,6 +53,36 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
             alarmDetails = alarmEntryUiState.alarmDetails.copy(
                 date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null)
             ))
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun dateNullCheck() {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val setHour = alarmEntryUiState.alarmDetails.clockTime.hour
+        val setMinute = alarmEntryUiState.alarmDetails.clockTime.minute
+
+        //local time > alarm setting time
+        if(hour > setHour || (hour == setHour && minute >= setMinute)){
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        //요일과 날짜를 둘 다 선택하지 않았다면
+        if(!alarmEntryUiState.alarmDetails.daysOfWeek.contains(true) && alarmEntryUiState.alarmDetails.date.selectedDateMillis == null){
+            updateAlarmDate(calendar.timeInMillis)
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateAlarmDate(newDateMillis: Long) {
+        val currentState = alarmEntryUiState
+        alarmEntryUiState = currentState.copy(
+            alarmDetails = currentState.alarmDetails.copy(
+                date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = newDateMillis)
+            )
+        )
     }
 
 }
