@@ -48,7 +48,10 @@ import com.example.videoalarm.daysList_en
 import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 object AlarmEntryDestination : NavigationDestination{
     override val route: String
@@ -175,14 +178,14 @@ fun DatePick(
         val month = calendar.get(Calendar.MONTH)+1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
         if(datePickerState.selectedDateMillis == null){
-            if(hour < 6) Text(text = "${month}월 ${day}일", modifier = Modifier.padding(start = 10.dp))
-            else Text(text = "${month}월 ${day+1}일", modifier = Modifier.padding(start = 10.dp))
+            if(hour < 6) Text(text = "${month}/${day}  (${stringResource(id = daysList_en[dayOfWeek-1])})", modifier = Modifier.padding(start = 30.dp))
+            else Text(text = "${month}/${day+1}  (${stringResource(id = daysList_en[if(dayOfWeek == 7) 0 else dayOfWeek])})", modifier = Modifier.padding(start = 30.dp))
         }
-        else Text(text = DateFormat.getDateInstance().format(datePickerState.selectedDateMillis).toString(), modifier = Modifier.padding(start = 10.dp))
-
+        else Text(text = SimpleDateFormat("MM/dd (EEE)", Locale.US).format(Date(datePickerState.selectedDateMillis!!)), modifier = Modifier.padding(start = 30.dp))
+        //Text(text = DateFormat.getDateInstance().format(datePickerState.selectedDateMillis).toString(), modifier = Modifier.padding(start = 30.dp))
         IconButton(onClick = { updateOpenDatePickDialog() }) {
             Icon(imageVector = Icons.Default.DateRange, contentDescription = "Date", modifier = Modifier.fillMaxHeight())
         }

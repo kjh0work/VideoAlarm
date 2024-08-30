@@ -58,10 +58,13 @@ import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.daysList_en
+import com.example.videoalarm.daysList_en2
 import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object HomeDestination : NavigationDestination {
     override val route: String
@@ -275,12 +278,12 @@ fun ShowDaysOfWeek(week : MutableList<Boolean>, modifier: Modifier = Modifier){
         //modifier = modifier.fillMaxWidth()
     ) {
         for( ind in 0..6){
-            Text(text = stringResource(id = daysList_en[ind]),
+            Text(text = stringResource(id = daysList_en2[ind]),
                 color = if(week[ind]) MaterialTheme.colorScheme.secondary else Color.Black,
                 modifier = Modifier
                     .padding(start = 5.dp)
                     .weight(1f),
-                //fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7
+                fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7
             )
         }
     }
@@ -292,8 +295,7 @@ fun ShowDate (date: DatePickerState, modifier: Modifier = Modifier){
     val dateString =
         if(date.selectedDateMillis == null) "No Date"
         else{
-            val format = DateFormat.getDateInstance().format(date.selectedDateMillis)
-            format
+            SimpleDateFormat("MM/dd (EEE)", Locale.US).format(Date(date.selectedDateMillis!!))
         }
     Row {
         Text(text = dateString)
