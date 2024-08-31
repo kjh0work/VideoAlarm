@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -202,9 +204,13 @@ fun DatePickerDialog(
     datePickerState: DatePickerState,
     updateOpenDatePickDialog : () -> Unit
 ) {
+    val calendar = Calendar.getInstance()
+    calendar.add(Calendar.DAY_OF_MONTH,-1)
+    val currentMillis = calendar.timeInMillis
     val confirmEnabled = remember {
-        derivedStateOf { datePickerState.selectedDateMillis != null }
+        derivedStateOf { datePickerState.selectedDateMillis != null && datePickerState.selectedDateMillis!! > currentMillis}
     }
+
     DatePickerDialog(
         onDismissRequest = {
             updateOpenDatePickDialog() //openDatePickDialog를 false로 해서 DatePickerDialog가 사라지도록 한다.
@@ -212,16 +218,18 @@ fun DatePickerDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    updateOpenDatePickDialog()
+                        updateOpenDatePickDialog()
                 },
-                enabled = confirmEnabled.value
+                enabled = confirmEnabled.value,
+                colors = if(confirmEnabled.value) ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) else ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary)
             ) {
                 Text("OK")
             }
         },
         dismissButton = {
             TextButton(onClick = { updateOpenDatePickDialog() }) { Text("Cancel") }
-        }
+        },
+
     ) {
         DatePicker(state = datePickerState)
     }
