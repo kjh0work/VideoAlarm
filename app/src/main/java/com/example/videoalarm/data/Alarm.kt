@@ -82,6 +82,26 @@ class DaysOfWeekConverters{
 class TimeConverters{
     @OptIn(ExperimentalMaterial3Api::class)
     @TypeConverter
+    fun fromClockTime(time: Int): TimePickerState {
+        val hour = time/60
+        val minute = time%60
+        return TimePickerState(
+            hour,
+            minute,
+            false
+        )
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @TypeConverter
+    fun TimePickerStateToClockTime(value: TimePickerState): Int {
+        return value.hour*60+value.minute;
+    }
+
+    /*
+    //String <-> TimePickerState
+    @OptIn(ExperimentalMaterial3Api::class)
+    @TypeConverter
     fun fromClockTime(time: String): TimePickerState {
         val times = time.split(":")
         return TimePickerState(
@@ -96,5 +116,6 @@ class TimeConverters{
     fun TimePickerStateToClockTime(value: TimePickerState): String {
         return "${value.hour}:${value.minute}"
     }
+     */
 }
 
