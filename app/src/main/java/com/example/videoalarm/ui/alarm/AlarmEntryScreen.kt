@@ -184,7 +184,15 @@ fun DatePick(
 
         if(datePickerState.selectedDateMillis == null){
             if(hour < 6) Text(text = "${month}/${day}  (${stringResource(id = daysList_en[dayOfWeek-1])})", modifier = Modifier.padding(start = 30.dp))
-            else Text(text = "${month}/${day+1}  (${stringResource(id = daysList_en[if(dayOfWeek == 7) 0 else dayOfWeek])})", modifier = Modifier.padding(start = 30.dp))
+            else{
+                val cal2 = Calendar.getInstance()
+                cal2.add(Calendar.DAY_OF_MONTH, 1)
+                val day2 = cal2.get(Calendar.DAY_OF_MONTH)
+                val month2 = cal2.get(Calendar.MONTH)+1
+                val dayOfWeek2 = cal2.get(Calendar.DAY_OF_WEEK)
+                Text(text = "${month2}/${day2}  (${stringResource(id = daysList_en[dayOfWeek2-1])})", modifier = Modifier.padding(start = 30.dp))
+            }
+
         }
         else Text(text = SimpleDateFormat("MM/dd (EEE)", Locale.US).format(Date(datePickerState.selectedDateMillis!!)), modifier = Modifier.padding(start = 30.dp))
         //Text(text = DateFormat.getDateInstance().format(datePickerState.selectedDateMillis).toString(), modifier = Modifier.padding(start = 30.dp))
