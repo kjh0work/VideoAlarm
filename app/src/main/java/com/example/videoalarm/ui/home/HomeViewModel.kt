@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +17,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class HomeViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
+class HomeViewModel(
+    private val alarmRepository: AlarmRepository,
+    private val alarmScheduler: AndroidAlarmScheduler
+) : ViewModel(){
 
     var isEditMode by mutableStateOf(false)
         private set
@@ -50,6 +54,7 @@ class HomeViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
         for(alarm:Alarm in checkedAlarmList){
             viewModelScope.launch {
                 alarmRepository.deleteItem(alarm)
+                alarmScheduler.cancel(alarm)
             }
         }
         checkedAlarmList.clear()

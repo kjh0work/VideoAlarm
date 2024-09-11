@@ -1,5 +1,7 @@
 package com.example.videoalarm.ui.alarm
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,19 +12,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewModel(){
+class AlarmEntryViewModel(
+    private val alarmRepository: AlarmRepository,
+    private val alarmScheduler: AndroidAlarmScheduler
+) : ViewModel(){
 
     var alarmEntryUiState by mutableStateOf(AlarmEntryUiState())
         private set
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun saveAlarm() {
         viewModelScope.launch {
             alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
+            alarmScheduler.schedule(alarmEntryUiState.alarmDetails.toAlarm())
         }
     }
 
@@ -85,6 +93,13 @@ class AlarmEntryViewModel(private val alarmRepository: AlarmRepository) : ViewMo
         )
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun alarmNameChange(newName: String) {
+        alarmEntryUiState = alarmEntryUiState.copy(
+            alarmDetails = alarmEntryUiState.alarmDetails.copy(name = newName)
+        )
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +126,7 @@ data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor
 
 data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val id: Long = 0,
-    val name: String = "default",
+    val name: String = "",
     val clockTime: TimePickerState = TimePickerState(6,0,false),
     val date: DatePickerState = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null),
     val isActive : Boolean = true,

@@ -1,5 +1,7 @@
 package com.example.videoalarm.ui.alarm
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +30,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
@@ -35,8 +40,11 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +70,7 @@ object AlarmEntryDestination : NavigationDestination{
         get() = R.string.alarmEntry
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmEntryScreen(
@@ -110,6 +119,10 @@ fun AlarmEntryScreen(
             },
             clearSelectedDate = {
                 viewModel.clearSelectedDate()
+            },
+            alarmName = viewModel.alarmEntryUiState.alarmDetails.name,
+            alarmNameChange = {
+                viewModel.alarmNameChange(it)
             }
         )
     }
@@ -125,7 +138,9 @@ fun AlarmEntryBody(
     openDatePickDialog: Boolean,
     datePickerState: DatePickerState,
     updateOpenDatePickDialog : () -> Unit,
-    clearSelectedDate : () -> Unit
+    clearSelectedDate : () -> Unit,
+    alarmName: String,
+    alarmNameChange : (String) -> Unit
 ){
     Column(
         modifier = modifier.fillMaxWidth(), //상위 modifier를 사용하면 topAppbor를 제외한 범위
@@ -142,10 +157,36 @@ fun AlarmEntryBody(
             isClicked = isClicked,
             daysPick = daysPick
         )
+        NamePick(
+            alarmName = alarmName,
+            alarmNameChange = alarmNameChange
+        )
         ResourceSet(
 
         )
     }
+}
+
+
+@Composable
+fun NamePick(
+    alarmName : String,
+    alarmNameChange : (String) -> Unit
+){
+    TextField(value = alarmName,
+        onValueChange = {alarmNameChange(it)},
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.Please_Enter_AlarmName_en),
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
+            )
+        },
+        modifier = Modifier.padding(vertical = 10.dp),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.DarkGray
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

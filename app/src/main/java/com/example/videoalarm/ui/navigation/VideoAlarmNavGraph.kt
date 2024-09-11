@@ -1,5 +1,7 @@
 package com.example.videoalarm.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -12,6 +14,7 @@ import com.example.videoalarm.ui.home.HomeDestination
 import com.example.videoalarm.ui.home.HomeScreen
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun VideoAlarmNavHost(
     navController: NavHostController,

@@ -295,7 +295,7 @@ fun ShowDate (date: DatePickerState, modifier: Modifier = Modifier){
     val dateString =
         if(date.selectedDateMillis == null) "No Date"
         else{
-            SimpleDateFormat("MM/dd (EEE)", Locale.US).format(Date(date.selectedDateMillis!!))
+            SimpleDateFormat("MM/dd (EEE)", Locale.getDefault()).format(Date(date.selectedDateMillis!!))
         }
     Row {
         Text(text = dateString)
