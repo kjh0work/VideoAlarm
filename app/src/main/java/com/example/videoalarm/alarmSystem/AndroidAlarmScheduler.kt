@@ -19,13 +19,14 @@ class AndroidAlarmScheduler(
     @OptIn(ExperimentalMaterial3Api::class)
     override fun schedule(item: Alarm) {
 
+        /**
+         * AlarmReceiver를 수행
+         * PendingIntent로 설정을 통해 나중에 수행
+         */
         val intent = Intent(context, AlarmReceiver::class.java).let {
             intent -> PendingIntent.getBroadcast(context,item.id.toInt(),intent,
             PendingIntent.FLAG_IMMUTABLE)
         }
-//        val myIntent = Intent(MY_ACTION)
-//        val pendingIntent = PendingIntent.getBroadcast(context, item.id.toInt(), myIntent, PendingIntent.FLAG_IMMUTABLE)
-
 
 //        val date = SimpleDateFormat("MM/dd", Locale.getDefault()).format(Date(item.date.selectedDateMillis!!))
 //        val month = date.substring(0,2)
