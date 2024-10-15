@@ -10,11 +10,9 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class VideoAlarmApplication : Application(){
-    //lateinit var container: AppContainer
 
     override fun onCreate() {
         super.onCreate()
-        //container = AppDataContainer(this)
         createNotificationChannel()
     }
 
@@ -35,18 +33,4 @@ class VideoAlarmApplication : Application(){
         }
     }
 
-    //테스트 용
-//    private fun createNotificationChannel() {
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            val channel = NotificationChannel(
-//                OnReceiveNotificationService.ONRECEIVE_CHANNEL_ID,
-//                "OnReceive",
-//                NotificationManager.IMPORTANCE_DEFAULT
-//            )
-//            channel.description = "Used for see OnReceive broadcast"
-//
-//            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//    }
 }

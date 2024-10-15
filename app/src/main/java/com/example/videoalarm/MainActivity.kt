@@ -1,6 +1,7 @@
 package com.example.videoalarm
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         //권한 설정 동의 Dialog가 필요
         if(!checkAlarmRemainderPermission()){
-            showSettingAlarmReminder()
+            showAlarmPermissionExplanationDialog()
         }
         //알'림' 허용 확인
         checkAndRequestNotificationPermission()
@@ -76,6 +77,20 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun showAlarmPermissionExplanationDialog(){
+        AlertDialog.Builder(this)
+            .setTitle("알람 설정 권한 필요")
+            .setMessage("정확한 알람을 설정하기 위한 권한이 필요합니다. 설정에서 권한을 허용해주세요.")
+            .setPositiveButton("설정으로 이동"){ _, _ ->
+                showSettingAlarmReminder()
+            }
+            .setNegativeButton("취소",null)
+            .create()
+            .show()
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkAndRequestNotificationPermission() {
         if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
@@ -83,6 +98,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 
