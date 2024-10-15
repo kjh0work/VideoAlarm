@@ -8,7 +8,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.content.getSystemService
 import com.example.videoalarm.ui.alarm.AlarmActivityScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AlarmActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

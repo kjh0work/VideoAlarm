@@ -8,10 +8,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.example.videoalarm.data.Alarm
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
+import javax.inject.Inject
 
-class AndroidAlarmScheduler(
-    private val context: Context
+class AndroidAlarmScheduler @Inject constructor(
+    @ApplicationContext private val context: Context
 ) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)

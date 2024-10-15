@@ -43,25 +43,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.data.Alarm
-import com.example.videoalarm.daysList_en
 import com.example.videoalarm.daysList_en2
-import com.example.videoalarm.ui.AppViewModelProvider
 import com.example.videoalarm.ui.navigation.NavigationDestination
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -80,7 +71,7 @@ fun HomeScreen(
     navigateToAlarmEntry: () -> Unit,
     navigateToAlarmDetail: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: HomeViewModel = hiltViewModel() //viewModel(factory = AppViewModelProvider.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val homeUiState by viewModel.homeUiState.collectAsState()

@@ -4,12 +4,13 @@ import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmDao
 import com.example.videoalarm.data.AlarmRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 /*
 * 해당 앱에서는 사용하는 db가 alarm하나뿐이기 때문에
 * 굳이 따로 repository Interface를 만들지 않음.
 * */
-class AlarmRepositoryClass (private val alarmDao : AlarmDao) : AlarmRepository {
+class AlarmRepositoryClass @Inject constructor (private val alarmDao : AlarmDao) : AlarmRepository {
     override fun getAllAlarmStream():Flow<List<Alarm>> = alarmDao.getAllAlarms()
 
     override fun getAlarmStream(id : Long) : Flow<Alarm> = alarmDao.getAlarm(id)

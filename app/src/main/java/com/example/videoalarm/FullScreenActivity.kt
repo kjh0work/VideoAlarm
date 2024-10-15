@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import com.example.videoalarm.ui.theme.VideoAlarmTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FullScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,9 @@ class FullScreenActivity : ComponentActivity() {
         turnScreenOnAndKeyguardOff()
     }
 
+    /**
+     * 기기 화면 잠금 & 화면 꺼짐 컨트롤
+     */
     private fun turnScreenOnAndKeyguardOff() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1){
             setShowWhenLocked(true)

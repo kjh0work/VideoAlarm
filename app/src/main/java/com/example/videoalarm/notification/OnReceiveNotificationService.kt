@@ -13,9 +13,11 @@ import androidx.core.content.getSystemService
 import com.example.videoalarm.FullScreenActivity
 import com.example.videoalarm.MainActivity
 import com.example.videoalarm.R
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class OnReceiveNotificationService(
-    private val context: Context
+class OnReceiveNotificationService @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

@@ -6,19 +6,24 @@ import android.content.Intent
 import android.util.Log
 import com.example.videoalarm.AlarmActivity
 import com.example.videoalarm.notification.OnReceiveNotificationService
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver: BroadcastReceiver() {
+
+    @Inject
+    lateinit var notificationService: OnReceiveNotificationService
 
     /**
      * AlarmManager를 통해 시스템으로 부터 정확한 시간에 Broadcast호출
      * Notification을 호출
      */
     override fun onReceive(context: Context?, intent: Intent?) {
+
         Log.d("checkOnReceive","Successfully onReceive")
 
         if (context != null) {
-            val notificationService = OnReceiveNotificationService(context)
-            //notificationService.showNotification()
             notificationService.showFullScreenNotification()
         }
 

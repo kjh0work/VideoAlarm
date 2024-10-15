@@ -15,10 +15,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
-class AlarmEntryViewModel(
+@HiltViewModel
+class AlarmEntryViewModel @Inject constructor(
     private val alarmRepository: AlarmRepository,
     private val alarmScheduler: AndroidAlarmScheduler
 ) : ViewModel(){

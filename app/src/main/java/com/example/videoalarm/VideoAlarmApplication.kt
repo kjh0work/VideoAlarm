@@ -5,17 +5,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import com.example.videoalarm.data.AppContainer
-import com.example.videoalarm.data.AppDataContainer
 import com.example.videoalarm.notification.OnReceiveNotificationService
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class VideoAlarmApplication : Application(){
-    lateinit var container: AppContainer
+    //lateinit var container: AppContainer
 
     override fun onCreate() {
         super.onCreate()
-        container = AppDataContainer(this)
+        //container = AppDataContainer(this)
         createNotificationChannel()
     }
 
