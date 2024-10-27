@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -41,18 +43,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.video.VideoFrameDecoder
 import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.daysList_en2
-import com.example.videoalarm.ui.navigation.NavigationDestination
+import com.example.videoalarm.navigation.NavigationDestination
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -248,9 +256,27 @@ fun AlarmItem(
                 ) {
                     if(item.date.selectedDateMillis != null) ShowDate(date = item.date)
                     else ShowDaysOfWeek(item.daysOfWeek)
-                    if(item.videoPath.isNotEmpty()){
-                        Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail")
-                    }
+
+//                    if(item.videoUri == null){
+//                        Image(imageVector = Icons.Default.PlayArrow, contentDescription = "video thumbnail")
+//                    }
+                    val videoEnabledLoader = ImageLoader.Builder(context = LocalContext.current)
+                        .components {
+                            add(VideoFrameDecoder.Factory())
+                        }.build()
+                    val request = ImageRequest.Builder(LocalContext.current)
+                        .data(item.videoUri)
+                        //.size(50, 100) Coil에서 자동으로 size 조정
+                        .build()
+                    AsyncImage(
+                        model = request,
+                        contentDescription = null,
+                        imageLoader = videoEnabledLoader,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20))
+                            .fillMaxWidth(2f / 3f)
+                            .aspectRatio(16f / 9f)
+                    )
                 }
 
                 Switch(

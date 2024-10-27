@@ -5,3 +5,4 @@ val daysList_en
 
 val daysList_en2
 = listOf(R.string.Sunday_en2,R.string.Monday_en2,R.string.Tuesday_en2,R.string.Wednesday_en2,R.string.Thursday_en2,R.string.Friday_en2,R.string.Saturday_en2)
+

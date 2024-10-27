@@ -15,7 +15,7 @@ class AlarmRepositoryClass @Inject constructor (private val alarmDao : AlarmDao)
 
     override fun getAlarmStream(id : Long) : Flow<Alarm> = alarmDao.getAlarm(id)
 
-    override suspend fun insertItem(alarm: Alarm) = alarmDao.insert(alarm)
+    override suspend fun insertItem(alarm: Alarm): Long = alarmDao.insert(alarm)
 
     override suspend fun deleteItem(alarm: Alarm) = alarmDao.delete(alarm)
 

@@ -4,6 +4,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import com.example.videoalarm.ui.fullScreenNotify.FullScreenAlarmScreen
 import com.example.videoalarm.ui.theme.VideoAlarmTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,14 +20,16 @@ import dagger.hilt.android.AndroidEntryPoint
 class FullScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val alarmId = intent.getLongExtra("alarmId",-1L)
+        Log.d("alarmId","In FullScreenActivity : $alarmId")
+        if (alarmId == -1L) {
+            finish()
+            return
+        }
+        Log.d("alarmId","In FullScreenActivity : $alarmId")
         setContent {
             VideoAlarmTheme {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(text = "This is Fullscreen")
-
-                }
+                FullScreenAlarmScreen(alarmId = alarmId)
             }
         }
     }

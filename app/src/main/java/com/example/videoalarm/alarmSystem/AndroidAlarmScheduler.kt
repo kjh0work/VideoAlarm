@@ -25,10 +25,21 @@ class AndroidAlarmScheduler @Inject constructor(
          * AlarmReceiver를 수행
          * PendingIntent로 설정을 통해 나중에 수행
          */
-        val intent = Intent(context, AlarmReceiver::class.java).let {
-            intent -> PendingIntent.getBroadcast(context,item.id.toInt(),intent,
-            PendingIntent.FLAG_IMMUTABLE)
+//        val intent = Intent(context, AlarmReceiver::class.java).let {
+//            intent -> PendingIntent.getBroadcast(context,item.id.toInt(),intent,
+//            PendingIntent.FLAG_IMMUTABLE)
+//        }
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("ALARM_ID", item.id)
         }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            item.id.toInt(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
 
 //        val date = SimpleDateFormat("MM/dd", Locale.getDefault()).format(Date(item.date.selectedDateMillis!!))
 //        val month = date.substring(0,2)
@@ -48,17 +59,11 @@ class AndroidAlarmScheduler @Inject constructor(
 
         //한번만 울리도록 설정됨.
         if(alarmManager.canScheduleExactAlarms()){
-            alarmManager.cancel(intent)
+            alarmManager.cancel(pendingIntent)
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
-                intent
-//                PendingIntent.getBroadcast(
-//                    context,
-//                    item.id.toInt(),
-//                    intent,
-//                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//                )
+                pendingIntent
             )
         }
 

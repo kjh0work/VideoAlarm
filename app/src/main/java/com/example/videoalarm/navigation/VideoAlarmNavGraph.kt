@@ -1,5 +1,6 @@
-package com.example.videoalarm.ui.navigation
+package com.example.videoalarm.navigation
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.videoalarm.ui.alarm.AlarmEntryDestination
 import com.example.videoalarm.ui.alarm.AlarmEntryScreen
+
 import com.example.videoalarm.ui.home.HomeDestination
 import com.example.videoalarm.ui.home.HomeScreen
 
@@ -22,16 +24,24 @@ fun VideoAlarmNavHost(
 ){
     NavHost(navController = navController, startDestination = HomeDestination.route, modifier = modifier) {
         composable(route = HomeDestination.route) {
-            HomeScreen(navigateToAlarmEntry = {
-                navController.navigate( AlarmEntryDestination.route) },
+            HomeScreen(
+                navigateToAlarmEntry = { navController.navigate( AlarmEntryDestination.route) },
                 navigateToAlarmDetail = {})
         }
 
         composable(route = AlarmEntryDestination.route){
             AlarmEntryScreen(
                 navigateBack = {navController.popBackStack()},
-                navigateUp = {navController.navigateUp()}
+                navigateUp = {navController.navigateUp()},
+                //navigateToVideoSelect = { navController.navigate(AlarmVideoSelectDestination.route) }
             )
         }
+
+//        composable(route = AlarmVideoSelectDestination.route){
+//            AlarmVideoSelectScreen(
+//                navigateBack = {navController.popBackStack()},
+//                navigateUp = {navController.navigateUp()},
+//            )
+//        }
     }
 }

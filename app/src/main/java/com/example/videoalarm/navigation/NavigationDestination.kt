@@ -1,4 +1,4 @@
-package com.example.videoalarm.ui.navigation
+package com.example.videoalarm.navigation
 
 interface NavigationDestination {
     val route : String

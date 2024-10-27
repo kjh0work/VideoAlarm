@@ -1,11 +1,13 @@
 package com.example.videoalarm.data
 
+import android.net.Uri
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
+import androidx.core.net.toUri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -24,7 +26,8 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isActive: Boolean,
     @TypeConverters(DaysOfWeekConverters::class)
     val daysOfWeek: MutableList<Boolean>,
-    val videoPath: String
+    @TypeConverters(UriConverters::class)
+    val videoUri: Uri?
 ){
     @OptIn(ExperimentalMaterial3Api::class)
     fun getTime() : String{
@@ -44,6 +47,18 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
         return str
     }
 }
+class UriConverters{
+    @TypeConverter
+    fun fromUri(uri: Uri?): String? {
+        return uri?.toString()
+    }
+
+    @TypeConverter
+    fun toUri(uriString: String?): Uri? {
+        return uriString?.let { Uri.parse(it) }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 class DateConverters{
     @TypeConverter

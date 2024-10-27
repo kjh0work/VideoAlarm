@@ -10,7 +10,7 @@ interface AlarmRepository {
 
     //fun deleteAlarm(id : Long)
 
-    suspend fun insertItem(alarm: Alarm)
+    suspend fun insertItem(alarm: Alarm) : Long
 
     suspend fun deleteItem(alarm: Alarm)
 

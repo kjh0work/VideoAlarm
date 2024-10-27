@@ -53,7 +53,7 @@ class OnReceiveNotificationService @Inject constructor(
      * 기기의 화면이 꺼진 경우, 알람이 울리면 전체 화면으로 notification을 띄움
      *
      */
-    fun showFullScreenNotification(){
+    fun showFullScreenNotification(alarmId : Long){
         val activityIntent = Intent(context, MainActivity::class.java)
         val activityPendingIntent = PendingIntent.getActivity(
             context,
@@ -62,7 +62,11 @@ class OnReceiveNotificationService @Inject constructor(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val fullScreenActivityIntent = Intent(context, FullScreenActivity::class.java)
+        val fullScreenActivityIntent = Intent(context, FullScreenActivity::class.java).apply {
+            putExtra("alarmId", alarmId)
+        }
+
+        Log.d("alarmId","In showFullScreenNotification : $alarmId")
 
         /**
          * PendingIntent의 flag를 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -72,7 +76,7 @@ class OnReceiveNotificationService @Inject constructor(
             context,
             2,
             fullScreenActivityIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val notification = NotificationCompat.Builder(context, FULLSCREEN_CHANNEL_ID)
@@ -83,6 +87,8 @@ class OnReceiveNotificationService @Inject constructor(
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_MAX)
+            //todo
+            //notification을 터치하면 실행되는 Activity 후에 동영상 재생을 위한 것으로 수정 필요
             .setContentIntent(activityPendingIntent)
             .setFullScreenIntent(fullScreenActivityPendingIntent, true)
             .setAutoCancel(true)

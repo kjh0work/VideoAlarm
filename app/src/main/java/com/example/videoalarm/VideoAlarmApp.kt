@@ -1,5 +1,6 @@
 package com.example.videoalarm
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.RowScope
@@ -18,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.videoalarm.ui.navigation.VideoAlarmNavHost
+import com.example.videoalarm.navigation.VideoAlarmNavHost
 
 //Top level composable
 //initialize NavController

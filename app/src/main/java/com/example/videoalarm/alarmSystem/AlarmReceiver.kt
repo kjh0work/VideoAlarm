@@ -21,13 +21,13 @@ class AlarmReceiver: BroadcastReceiver() {
      */
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        Log.d("checkOnReceive","Successfully onReceive")
 
-        if (context != null) {
-            notificationService.showFullScreenNotification()
+
+        if (context != null && intent != null) {
+            val alarmId = intent.getLongExtra("ALARM_ID", -1L)
+            Log.d("alarmId","In AlarmReceiver : $alarmId")
+            notificationService.showFullScreenNotification(alarmId)
         }
-
-
 
         //안드로이드 10버전 부터 백그라운드에서 Acitivity 실행이 제한되었다. -> Notification을 적용
 //        context?.let {

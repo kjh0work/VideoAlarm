@@ -1,6 +1,14 @@
 package com.example.videoalarm.ui.alarm
 
+import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
+import android.net.Uri
 import android.os.Build
+import android.util.Size
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePickerState
@@ -16,29 +24,36 @@ import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class AlarmEntryViewModel @Inject constructor(
     private val alarmRepository: AlarmRepository,
-    private val alarmScheduler: AndroidAlarmScheduler
-) : ViewModel(){
+    private val alarmScheduler: AndroidAlarmScheduler,
+) : ViewModel() {
 
     var alarmEntryUiState by mutableStateOf(AlarmEntryUiState())
         private set
 
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.S)
     fun saveAlarm() {
         viewModelScope.launch {
-            alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
+            val alarmId:Long = alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
+            alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(
+                id = alarmId
+            ))
             alarmScheduler.schedule(alarmEntryUiState.alarmDetails.toAlarm())
         }
     }
 
 
-    private fun validateInput(alarmDetail:AlarmDetails = alarmEntryUiState.alarmDetails) : Boolean{
+    private fun validateInput(alarmDetail: AlarmDetails = alarmEntryUiState.alarmDetails): Boolean {
         //현재 알람 설정 특성상 기본 설정이 있고,
         //그 이외에 값은 체크 값이기 때문에 상관 없다.
         return true;
@@ -55,15 +70,17 @@ class AlarmEntryViewModel @Inject constructor(
     }
 
     fun updateOpenDatePickDialog() {
-        alarmEntryUiState = alarmEntryUiState.copy(openDatePickDialog = !alarmEntryUiState.openDatePickDialog)
+        alarmEntryUiState =
+            alarmEntryUiState.copy(openDatePickDialog = !alarmEntryUiState.openDatePickDialog)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun clearSelectedDate(){
+    fun clearSelectedDate() {
         alarmEntryUiState = alarmEntryUiState.copy(
             alarmDetails = alarmEntryUiState.alarmDetails.copy(
                 date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null)
-            ))
+            )
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -76,12 +93,12 @@ class AlarmEntryViewModel @Inject constructor(
         val setMinute = alarmEntryUiState.alarmDetails.clockTime.minute
 
         //local time > alarm setting time
-        if(hour > setHour || (hour == setHour && minute >= setMinute)){
+        if (hour > setHour || (hour == setHour && minute >= setMinute)) {
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
         //요일과 날짜를 둘 다 선택하지 않았다면
-        if(!alarmEntryUiState.alarmDetails.daysOfWeek.contains(true) && alarmEntryUiState.alarmDetails.date.selectedDateMillis == null){
+        if (!alarmEntryUiState.alarmDetails.daysOfWeek.contains(true) && alarmEntryUiState.alarmDetails.date.selectedDateMillis == null) {
             updateAlarmDate(calendar.timeInMillis)
         }
     }
@@ -91,7 +108,10 @@ class AlarmEntryViewModel @Inject constructor(
         val currentState = alarmEntryUiState
         alarmEntryUiState = currentState.copy(
             alarmDetails = currentState.alarmDetails.copy(
-                date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = newDateMillis)
+                date = DatePickerState(
+                    CalendarLocale.KOREA,
+                    initialSelectedDateMillis = newDateMillis
+                )
             )
         )
     }
@@ -103,8 +123,14 @@ class AlarmEntryViewModel @Inject constructor(
         )
     }
 
-}
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateVideoUri(uri : Uri){
+        alarmEntryUiState = alarmEntryUiState.copy(
+            alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = uri)
+        )
+    }
 
+}
 @OptIn(ExperimentalMaterial3Api::class)
 fun AlarmDetails.toAlarm() : Alarm = Alarm(
     id = id,
@@ -113,7 +139,7 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
     date = date,
     isActive = isActive,
     daysOfWeek = daysOfWeek,
-    videoPath = videoPath
+    videoUri = videoUri
 )
 
 /**
@@ -134,5 +160,5 @@ data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val date: DatePickerState = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null),
     val isActive : Boolean = true,
     val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
-    val videoPath : String = ""
+    val videoUri : Uri? = null
 )
