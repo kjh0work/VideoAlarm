@@ -20,11 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.videoalarm.alarmSystem.AlarmScheduler
 import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
+import com.example.videoalarm.copyVideoToInternalStorage
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -33,7 +36,7 @@ import kotlin.math.max
 @HiltViewModel
 class AlarmEntryViewModel @Inject constructor(
     private val alarmRepository: AlarmRepository,
-    private val alarmScheduler: AndroidAlarmScheduler,
+    private val alarmScheduler: AlarmScheduler,
 ) : ViewModel() {
 
     var alarmEntryUiState by mutableStateOf(AlarmEntryUiState())
@@ -42,8 +45,14 @@ class AlarmEntryViewModel @Inject constructor(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.S)
-    fun saveAlarm() {
+    fun saveAlarm(context: Context) {
         viewModelScope.launch {
+            val videoUri = alarmEntryUiState.alarmDetails.videoUri
+            videoUri?.let {
+                val copiedUri = copyVideoToInternalStorage(context, videoUri)
+                alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = copiedUri))
+            }
+
             val alarmId:Long = alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
             alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(
                 id = alarmId

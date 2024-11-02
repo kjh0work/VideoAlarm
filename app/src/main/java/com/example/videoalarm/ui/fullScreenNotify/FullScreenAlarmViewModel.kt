@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
@@ -27,6 +28,13 @@ class FullScreenAlarmViewModel @Inject constructor(
 
     //private val _alarm = MutableStateFlow<Alarm?>(null)
     //val alarm : StateFlow<Alarm?> = _alarm.asStateFlow()
+    init {
+        player.addListener(object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e("ExoPlayer", "Playback error: ${error.message}")
+            }
+        })
+    }
 
     fun loadAlarm(alarmId : Long){
         Log.d("alarmId", "loadAlarm called with alarmId: $alarmId")

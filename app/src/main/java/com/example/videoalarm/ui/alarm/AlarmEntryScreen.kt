@@ -99,6 +99,7 @@ fun AlarmEntryScreen(
     viewModel : AlarmEntryViewModel = hiltViewModel(),
 ){
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold (
         topBar = {VideoAlarmTopAppBar(title = stringResource(id = R.string.alarmEntry), canNavigateBack = true,
@@ -114,7 +115,7 @@ fun AlarmEntryScreen(
                     }
                     IconButton(onClick = {
                         viewModel.dateNullCheck()
-                        viewModel.saveAlarm()
+                        viewModel.saveAlarm(context)
                         navigateUp()
                     }, modifier = Modifier.weight(0.5f)) {
                         Icon(imageVector = Icons.Default.Done, contentDescription = "save")

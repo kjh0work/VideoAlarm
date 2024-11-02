@@ -23,7 +23,7 @@ import com.example.videoalarm.navigation.VideoAlarmNavHost
 
 //Top level composable
 //initialize NavController
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun VideoAlarmApp(navController: NavHostController = rememberNavController()){
     VideoAlarmNavHost(navController = navController)

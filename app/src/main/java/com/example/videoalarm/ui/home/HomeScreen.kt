@@ -1,7 +1,8 @@
 package com.example.videoalarm.ui.home
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -73,6 +73,7 @@ object HomeDestination : NavigationDestination {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -137,7 +138,7 @@ fun HomeScreen(
             alarmList = homeUiState.alarmList,
             contentPadding = innerPadding,
             switchChange = {alarm,switchChanged ->
-                           viewModel.updateAlarm(alarm.copy(isActive = switchChanged))
+                           viewModel.updateAlarmIsActive(alarm.copy(isActive = switchChanged))
             },
             isEditMode = viewModel.isEditMode,
             editCheck = { alarm, b ->
