@@ -26,8 +26,8 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isActive: Boolean,
     @TypeConverters(DaysOfWeekConverters::class)
     val daysOfWeek: MutableList<Boolean>,
-    @TypeConverters(UriConverters::class)
-    val videoUri: Uri?,
+//    @TypeConverters(UriConverters::class)
+//    val videoUri: Uri?,
     val fileName : String
 ){
     @OptIn(ExperimentalMaterial3Api::class)
@@ -48,17 +48,17 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
         return str
     }
 }
-class UriConverters{
-    @TypeConverter
-    fun fromUri(uri: Uri?): String? {
-        return uri?.toString()
-    }
-
-    @TypeConverter
-    fun toUri(uriString: String?): Uri? {
-        return uriString?.let { Uri.parse(it) }
-    }
-}
+//class UriConverters{
+//    @TypeConverter
+//    fun fromUri(uri: Uri?): String? {
+//        return uri?.toString()
+//    }
+//
+//    @TypeConverter
+//    fun toUri(uriString: String?): Uri? {
+//        return uriString?.let { Uri.parse(it) }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 class DateConverters{

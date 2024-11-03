@@ -1,5 +1,6 @@
 package com.example.videoalarm.ui.home
 
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -60,6 +61,7 @@ import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.daysList_en2
+import com.example.videoalarm.getFileFromExternalStorage
 import com.example.videoalarm.navigation.NavigationDestination
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -223,7 +225,7 @@ fun AlarmItem(
     editCheck : (Alarm, Boolean) -> Unit,
     checkedAlarmList : SnapshotStateList<Alarm>
 ){
-
+    val context = LocalContext.current
     Card(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 4.dp),
         onClick = {}
@@ -265,8 +267,9 @@ fun AlarmItem(
                         .components {
                             add(VideoFrameDecoder.Factory())
                         }.build()
+                    val file = getFileFromExternalStorage(context,item.fileName)
                     val request = ImageRequest.Builder(LocalContext.current)
-                        .data(item.videoUri)
+                        .data(Uri.fromFile(file))
                         //.size(50, 100) Coil에서 자동으로 size 조정
                         .build()
                     AsyncImage(

@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.example.videoalarm.AlarmActivity
 import com.example.videoalarm.data.AlarmRepository
 import com.example.videoalarm.notification.OnReceiveNotificationService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

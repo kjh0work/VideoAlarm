@@ -38,7 +38,7 @@ class AlarmEntryViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.S)
     fun saveAlarm(context: Context) {
         viewModelScope.launch {
-            val videoUri = alarmEntryUiState.alarmDetails.videoUri
+            val videoUri = alarmEntryUiState.videoUri
             Log.d("AlarmEntry",videoUri.toString())
             videoUri?.let {uri ->
                 val filename = saveFileToExternalStorage(context, uri)
@@ -129,7 +129,8 @@ class AlarmEntryViewModel @Inject constructor(
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateVideoUri(uri : Uri){
         alarmEntryUiState = alarmEntryUiState.copy(
-            alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = uri)
+            //alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = uri)
+            videoUri = uri
         )
     }
 
@@ -142,7 +143,7 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
     date = date,
     isActive = isActive,
     daysOfWeek = daysOfWeek,
-    videoUri = videoUri,
+    //videoUri = videoUri,
     fileName = fileName
 )
 
@@ -154,7 +155,8 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
 data class AlarmEntryUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isEntryValid : Boolean = false,
     val alarmDetails : AlarmDetails = AlarmDetails(),
-    val openDatePickDialog : Boolean = false
+    val openDatePickDialog : Boolean = false,
+    val videoUri : Uri? = null
 )
 
 data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
@@ -164,6 +166,6 @@ data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val date: DatePickerState = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null),
     val isActive : Boolean = true,
     val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
-    val videoUri: Uri? = null,
+    //val videoUri: Uri? = null,
     val fileName : String = ""
 )

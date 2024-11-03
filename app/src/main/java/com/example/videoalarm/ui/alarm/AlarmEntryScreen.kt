@@ -146,7 +146,7 @@ fun AlarmEntryScreen(
             alarmNameChange = {
                 viewModel.alarmNameChange(it)
             },
-            videoUri = viewModel.alarmEntryUiState.alarmDetails.videoUri,
+            videoUri = viewModel.alarmEntryUiState.videoUri,
             updateVideoUri = {
                 viewModel.updateVideoUri(it)
             }
