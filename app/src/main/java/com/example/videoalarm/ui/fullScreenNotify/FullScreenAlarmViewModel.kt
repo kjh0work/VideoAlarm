@@ -1,5 +1,6 @@
 package com.example.videoalarm.ui.fullScreenNotify
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
+import com.example.videoalarm.getFileFromExternalStorage
 import com.example.videoalarm.ui.home.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +28,6 @@ class FullScreenAlarmViewModel @Inject constructor(
     val player: Player
 ) : ViewModel() {
 
-    //private val _alarm = MutableStateFlow<Alarm?>(null)
-    //val alarm : StateFlow<Alarm?> = _alarm.asStateFlow()
     init {
         player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
@@ -36,15 +36,17 @@ class FullScreenAlarmViewModel @Inject constructor(
         })
     }
 
-    fun loadAlarm(alarmId : Long){
+    fun loadAlarm(alarmId : Long, context: Context){
         Log.d("alarmId", "loadAlarm called with alarmId: $alarmId")
         viewModelScope.launch {
             try {
                 Log.d("alarmId", "Starting to collect from getAlarmStream")
                 repository.getAlarmStream(alarmId).collect { alarm ->
                     Log.d("alarmId", "Collected alarm: $alarm")
-                    alarm.videoUri?.let {
-                        player.setMediaItem(MediaItem.fromUri(alarm.videoUri))
+                    alarm.fileName.let {filename ->
+                        val file = getFileFromExternalStorage(context, filename)
+                        val uri = Uri.fromFile(file)
+                        player.setMediaItem(MediaItem.fromUri(uri))
                         player.prepare()
                         player.play()
                     }
@@ -53,16 +55,7 @@ class FullScreenAlarmViewModel @Inject constructor(
                 Log.e("alarmId", "Error collecting alarm", e)
             }
         }
-//        viewModelScope.launch {
-//            repository.getAlarmStream(alarmId).collect{ it ->
-//                it.videoUri?.let {
-//                    Log.d("alarmId", it.toString())
-//                    player.setMediaItem(MediaItem.fromUri(it))
-//                    player.prepare()
-//                    player.play()
-//                }
-//            }
-//        }
+
     }
 
     override fun onCleared() {

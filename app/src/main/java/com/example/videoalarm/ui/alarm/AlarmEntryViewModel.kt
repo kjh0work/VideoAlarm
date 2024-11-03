@@ -1,14 +1,9 @@
 package com.example.videoalarm.ui.alarm
 
-import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.media.MediaMetadataRetriever
-import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
 import android.net.Uri
 import android.os.Build
-import android.util.Size
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePickerState
@@ -21,17 +16,13 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.videoalarm.alarmSystem.AlarmScheduler
-import com.example.videoalarm.alarmSystem.AndroidAlarmScheduler
-import com.example.videoalarm.copyVideoToInternalStorage
 import com.example.videoalarm.data.Alarm
 import com.example.videoalarm.data.AlarmRepository
+import com.example.videoalarm.saveFileToExternalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
-import kotlin.math.max
 
 @HiltViewModel
 class AlarmEntryViewModel @Inject constructor(
@@ -48,9 +39,12 @@ class AlarmEntryViewModel @Inject constructor(
     fun saveAlarm(context: Context) {
         viewModelScope.launch {
             val videoUri = alarmEntryUiState.alarmDetails.videoUri
-            videoUri?.let {
-                val copiedUri = copyVideoToInternalStorage(context, videoUri)
-                alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = copiedUri))
+            Log.d("AlarmEntry",videoUri.toString())
+            videoUri?.let {uri ->
+                val filename = saveFileToExternalStorage(context, uri)
+//                val copiedUri = copyVideoToInternalStorage(context, videoUri)
+//                alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(videoUri = filename))
+                  alarmEntryUiState = alarmEntryUiState.copy(alarmDetails = alarmEntryUiState.alarmDetails.copy(fileName = filename))
             }
 
             val alarmId:Long = alarmRepository.insertItem(alarmEntryUiState.alarmDetails.toAlarm())
@@ -148,7 +142,8 @@ fun AlarmDetails.toAlarm() : Alarm = Alarm(
     date = date,
     isActive = isActive,
     daysOfWeek = daysOfWeek,
-    videoUri = videoUri
+    videoUri = videoUri,
+    fileName = fileName
 )
 
 /**
@@ -169,5 +164,6 @@ data class AlarmDetails @OptIn(ExperimentalMaterial3Api::class) constructor(
     val date: DatePickerState = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null),
     val isActive : Boolean = true,
     val daysOfWeek : MutableList<Boolean> = mutableListOf(false,false,false,false,false,false,false),
-    val videoUri : Uri? = null
+    val videoUri: Uri? = null,
+    val fileName : String = ""
 )

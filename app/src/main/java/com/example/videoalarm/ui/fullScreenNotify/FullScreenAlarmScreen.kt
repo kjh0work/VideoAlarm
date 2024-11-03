@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.PlaybackException
@@ -20,9 +21,9 @@ fun FullScreenAlarmScreen(
     viewModel: FullScreenAlarmViewModel = hiltViewModel(),
     alarmId : Long
     ){
-
+    val context = LocalContext.current
     LaunchedEffect(key1 = alarmId) {
-        viewModel.loadAlarm(alarmId)
+        viewModel.loadAlarm(alarmId, context)
     }
 
     Box(

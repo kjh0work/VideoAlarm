@@ -27,7 +27,8 @@ data class Alarm @OptIn(ExperimentalMaterial3Api::class) constructor(
     @TypeConverters(DaysOfWeekConverters::class)
     val daysOfWeek: MutableList<Boolean>,
     @TypeConverters(UriConverters::class)
-    val videoUri: Uri?
+    val videoUri: Uri?,
+    val fileName : String
 ){
     @OptIn(ExperimentalMaterial3Api::class)
     fun getTime() : String{
