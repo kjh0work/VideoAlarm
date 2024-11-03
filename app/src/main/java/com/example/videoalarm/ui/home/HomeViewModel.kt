@@ -1,5 +1,7 @@
 package com.example.videoalarm.ui.home
 
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +18,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,13 +56,41 @@ class HomeViewModel @Inject constructor(
      *
      * isActive가 변화함에 따라서 알람을 다시 설정하거나 해제
      */
+    @OptIn(ExperimentalMaterial3Api::class)
     fun updateAlarmIsActive(updatedAlarm : Alarm){
         viewModelScope.launch {
             alarmRepository.updateItem(updatedAlarm)
 
             //1. isActive가 False로 바뀌었다면, 설정된 schedule을 삭제해야 한다.
             //2. isActive가 True라면, 다시 schedule을 해야 한다.
-            if(updatedAlarm.isActive) alarmScheduler.schedule(updatedAlarm)
+            if(updatedAlarm.isActive){
+                if(updatedAlarm.daysOfWeek.contains(true)){ // 알람이 요일인 경우
+                    alarmScheduler.schedule(updatedAlarm)
+                }
+                else{ //알람이 정확한 날짜인 경우..
+                    val calendar = Calendar.getInstance().apply {
+                        timeInMillis = updatedAlarm.date.selectedDateMillis!!
+                        set(Calendar.HOUR_OF_DAY, updatedAlarm.clockTime.hour)
+                        set(Calendar.MINUTE, updatedAlarm.clockTime.minute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }
+                    val alarmTime = calendar.timeInMillis
+
+                    if(alarmTime > System.currentTimeMillis()){
+                        alarmScheduler.schedule(updatedAlarm)
+                    }
+                    else{
+                        //현재 설정된 알람 기준으로 다음날.
+                        val newDateMillis = updatedAlarm.date.selectedDateMillis!! + TimeUnit.DAYS.toMillis(1)
+                        val newDatePickerState = DatePickerState(initialSelectedDateMillis = newDateMillis, locale = Locale.KOREA)
+                        val nextDayAlarm = updatedAlarm.copy(date = newDatePickerState)
+                        alarmRepository.updateItem(nextDayAlarm)
+                        alarmScheduler.schedule(nextDayAlarm)
+                    }
+
+                }
+            }
             else alarmScheduler.cancel(updatedAlarm)
         }
     }
