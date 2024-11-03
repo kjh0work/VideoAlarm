@@ -41,32 +41,4 @@ class FullScreenActivity : ComponentActivity() {
                     or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         )
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//        //turnScreenOnAndKeyguardOff()
-//    }
-//
-//    /**
-//     * 기기 화면 잠금 & 화면 꺼짐 컨트롤
-//     */
-//    private fun turnScreenOnAndKeyguardOff() {
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1){
-//            setShowWhenLocked(true)
-//            setTurnScreenOn(true)
-//            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
-//        }
-//        else{
-//            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED    // deprecated api 27
-//                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD     // deprecated api 26
-//                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-//                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON   // deprecated api 27
-//                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
-//        }
-//
-//        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            keyguardManager.requestDismissKeyguard(this, null)
-//        }
-//    }
 }
