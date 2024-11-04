@@ -47,6 +47,7 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Dimension
 import coil3.video.VideoFrameDecoder
@@ -182,11 +184,15 @@ fun AlarmEntryBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TimePick(timePickerState = timePickerState)
+
         if(!isClicked.contains(true)){
             DatePick(openDatePickDialog = openDatePickDialog,datePickerState = datePickerState, updateOpenDatePickDialog = updateOpenDatePickDialog)
         }
         else{
-            clearSelectedDate()
+            LaunchedEffect(Unit) {
+                clearSelectedDate()
+            }
+            Log.d("isRecomposition","yes")
         }
         WeekPick(
             isClicked = isClicked,
@@ -209,20 +215,32 @@ fun ResourcePick(
     videoUri : Uri?,
     updateVideoUri : (Uri) -> Unit
 ){
-
+    val context = LocalContext.current
     val videoSelectLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
         it?.let { updateVideoUri(it) }
     }
+    //uri를 여기다 저장해놓고 하는 방법으로 다시 시도해 볼까?
 
     TextButton(onClick = {videoSelectLauncher.launch("video/*")} ) {
         Text(text = "동영상 선택")
     }
+
     videoUri?.let {
-        val videoEnabledLoader = ImageLoader.Builder(context = LocalContext.current)
+        // videoUri의 접근 권한 확인
+        val contentResolver = LocalContext.current.contentResolver
+        try {
+            val inputStream = contentResolver.openInputStream(it)
+            inputStream?.close()
+            Log.d("ResourcePick", "videoUri is accessible")
+        } catch (e: Exception) {
+            Log.e("ResourcePick", "Cannot access videoUri: ${e.message}")
+        }
+
+        val videoEnabledLoader = ImageLoader.Builder(context = context)
             .components {
                 add(VideoFrameDecoder.Factory())
             }.build()
-        val request = ImageRequest.Builder(LocalContext.current)
+        val request = ImageRequest.Builder(context)
             .data(videoUri)
             //.size(50, 100) Coil에서 자동으로 size 조정
             .build()
@@ -233,7 +251,15 @@ fun ResourcePick(
             modifier = Modifier
                 .clip(RoundedCornerShape(20))
                 .fillMaxWidth(2f / 3f)
-                .aspectRatio(16f / 9f)
+                .aspectRatio(16f / 9f),
+            onState = {state ->
+                when(state){
+                    is AsyncImagePainter.State.Empty -> Log.d("coil_state","isEmpty")
+                    is AsyncImagePainter.State.Loading -> Log.d("coil_state","isLoading")
+                    is AsyncImagePainter.State.Error -> Log.d("coil_state","${state.result.throwable.message}")
+                    else -> Log.d("coil_state","success")
+                }
+            }
         )
     }
 }
@@ -282,6 +308,7 @@ fun DatePick(
     datePickerState: DatePickerState,
     updateOpenDatePickDialog : () -> Unit
 ){
+    Log.d("isRecomposition","yes_ in DatePick")
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -360,6 +387,7 @@ fun WeekPick(
     isClicked : MutableList<Boolean>,
     daysPick : (Int) -> Unit
 ){
+    Log.d("isRecomposition","yes_ in WeekPick")
     Row(
         modifier = Modifier
             .fillMaxWidth()

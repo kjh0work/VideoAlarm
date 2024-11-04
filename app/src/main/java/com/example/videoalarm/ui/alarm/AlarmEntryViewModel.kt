@@ -84,6 +84,7 @@ class AlarmEntryViewModel @Inject constructor(
                 date = DatePickerState(CalendarLocale.KOREA, initialSelectedDateMillis = null)
             )
         )
+        Log.d("isRecomposition","yes_in clearSelectedDate")
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
