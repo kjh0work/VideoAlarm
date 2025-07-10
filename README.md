@@ -60,6 +60,6 @@ app/
 
 | | |
 |---|---|
-| ![Demo 1](https://PLACEHOLDER_IMAGE_1) | ![Demo 2](https://PLACEHOLDER_IMAGE_2) |
-| ![Demo 3](https://PLACEHOLDER_IMAGE_3) | ![Demo 4](https://PLACEHOLDER_IMAGE_4) |
+| ![홈 화면](resource/home.jpg) | ![알람 설정 화면](resource/set.jpg) |
+| ![동영상 선택 화면](resource/choose.jpg) | ![설정 완료 화면](resource/result.jpg) |
 
