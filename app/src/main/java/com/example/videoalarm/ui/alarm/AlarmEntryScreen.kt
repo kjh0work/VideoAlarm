@@ -60,6 +60,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -72,6 +74,7 @@ import coil3.video.VideoFrameDecoder
 import com.example.videoalarm.R
 import com.example.videoalarm.VideoAlarmTopAppBar
 import com.example.videoalarm.daysList_en
+import com.example.videoalarm.daysList_en2
 import com.example.videoalarm.navigation.NavigationDestination
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
@@ -398,6 +401,7 @@ fun WeekPick(
         for(week in 0..6){
             Box(
                 modifier = Modifier
+                    .weight(1f)
                     .clickable(
                         onClick = { daysPick(week) }
                     )
@@ -407,9 +411,15 @@ fun WeekPick(
                             if (isClicked[week]) Color(134, 52, 235) else Color.Transparent
                         ), CircleShape
                     )
-                    .padding(7.dp)
+                    .padding(horizontal = 2.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(text = stringResource(id = daysList_en[week]), color = if(isClicked[week]) MaterialTheme.colorScheme.primary else Color.White )
+                Text(text = stringResource(id = daysList_en2[week]),
+                    color = if(isClicked[week]) MaterialTheme.colorScheme.primary else Color.White,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis
+                    )
             }
         }
 

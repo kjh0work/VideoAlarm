@@ -38,7 +38,7 @@ class OnReceiveNotificationService @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, ONRECEIVE_CHANNEL_ID)
-            .setSmallIcon(R.drawable.hamstar_modified)
+            .setSmallIcon(R.drawable.alarmicon)
             .setContentTitle("OnReceive occur")
             .setContentText("sdfkjalsdjflkads")
             .setContentIntent(activityPendingIntent)
@@ -80,7 +80,7 @@ class OnReceiveNotificationService @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, FULLSCREEN_CHANNEL_ID)
-            .setSmallIcon(R.drawable.hamstar_modified)
+            .setSmallIcon(R.drawable.alarmicon)
             .setContentTitle("알람 울림")
             .setContentText("Full screen alarm")
             .setDefaults(Notification.DEFAULT_VIBRATE)

@@ -1,6 +1,6 @@
 [versions]
-agp = "8.3.1"
-kotlin = "1.9.0"
+agp = "8.13.1"
+kotlin = "2.2.21"
 coreKtx = "1.13.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -11,7 +11,13 @@ composeBom = "2023.08.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.8.0"
-hilt = "2.52"
+hilt = "2.56.1"
+navigation = "2.7.7"     # (안정판 추천) 지금 쓰는 값 그대로여도 OK
+hiltNavCompose = "1.2.0" # ★ 별도 버전
+room = "2.8.0"
+media3 = "1.8.0"
+coil3 = "3.3.0"
+material3 = "1.5.0-alpha04"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -20,23 +26,46 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" , version.ref = "material3"}
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-# Hilt 라이브러리 추가
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+
+androidx-compose-bom            = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-material-icons-core    = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-material-icons-extended= { group = "androidx.compose.material", name = "material-icons-extended" }
+
+# Navigation
+androidx-navigation-compose     = { group = "androidx.navigation", name = "navigation-compose",      version.ref = "navigation" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx",  version.ref = "navigation" }
+
+# Hilt
+hilt-android                    = { group = "com.google.dagger", name = "hilt-android",              version.ref = "hilt" }
+hilt-compiler                   = { group = "com.google.dagger", name = "hilt-android-compiler",     version.ref = "hilt" }
+androidx-hilt-navigation-compose= { group = "androidx.hilt", name = "hilt-navigation-compose",       version.ref = "hiltNavCompose" }
+
+# Room
+androidx-room-runtime  = { group = "androidx.room", name = "room-runtime",  version.ref = "room" }
+androidx-room-ktx      = { group = "androidx.room", name = "room-ktx",      version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+coil3               = { group = "io.coil-kt.coil3", name = "coil",                 version.ref = "coil3" }
+coil3-compose       = { group = "io.coil-kt.coil3", name = "coil-compose",         version.ref = "coil3" }
+coil3-network-okhttp= { group = "io.coil-kt.coil3", name = "coil-network-okhttp",  version.ref = "coil3" }
+coil3-video         = { group = "io.coil-kt.coil3", name = "coil-video",           version.ref = "coil3" }
+
+media3-common    = { group = "androidx.media3", name = "media3-common",    version.ref = "media3" }
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+media3-ui        = { group = "androidx.media3", name = "media3-ui",        version.ref = "media3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

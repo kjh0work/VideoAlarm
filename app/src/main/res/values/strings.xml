@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VideoAlarm</string>
+    <string name="back_button">back</string>
+
+    <string name="Sunday_en">Sunday</string>
+    <string name="Monday_en">Monday</string>
+    <string name="Tuesday_en">Tuesday</string>
+    <string name="Wednesday_en">Wednesday</string>
+    <string name="Thursday_en">Thursday</string>
+    <string name="Friday_en">Friday</string>
+    <string name="Saturday_en">Saturday</string>
+
+    <string name="Sunday_en2">Sun</string>
+    <string name="Monday_en2">Mon</string>
+    <string name="Tuesday_en2">Tue</string>
+    <string name="Wednesday_en2">Wed</string>
+    <string name="Thursday_en2">Thu</string>
+    <string name="Friday_en2">Fri</string>
+    <string name="Saturday_en2">Sat</string>
+
+    <string name="permission">Permissions</string>
+    <string name="no_alarm">There\'s no Alarm</string>
+    <string name="Please_Enter_AlarmName_en">please enter alarm name</string>
+    <string name="alarmEntry">alarmEntry</string>
+
+</resources>

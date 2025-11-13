@@ -1,6 +1,7 @@
 package com.example.videoalarm.ui.home
 
 import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -83,6 +84,7 @@ class HomeViewModel @Inject constructor(
                     else{
                         //현재 설정된 알람 기준으로 다음날.
                         val newDateMillis = updatedAlarm.date.selectedDateMillis!! + TimeUnit.DAYS.toMillis(1)
+
                         val newDatePickerState = DatePickerState(initialSelectedDateMillis = newDateMillis, locale = Locale.KOREA)
                         val nextDayAlarm = updatedAlarm.copy(date = newDatePickerState)
                         alarmRepository.updateItem(nextDayAlarm)
