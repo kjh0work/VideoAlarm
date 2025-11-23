@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.composeCompiler)
-    kotlin("kapt")
+    alias(libs.plugins.googleDevtoolsKsp)
 }
 
 // ★ 최상위 레벨에 배치 (android{} 바깥)
@@ -13,6 +13,13 @@ configurations.configureEach {
 
 kotlin {
     jvmToolchain(17)
+
+    compilerOptions {
+        // Material3 TimePickerState 같은 실험적 API 허용
+        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+        // 혹시 material(1.x) 실험 API도 쓰고 있으면 아래 한 줄도 추가
+        // optIn.add("androidx.compose.material.ExperimentalMaterialApi")
+    }
 }
 
 android {
@@ -64,10 +71,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.coil3)                 // core
     implementation(libs.coil3.compose)         // coil3.compose.AsyncImage

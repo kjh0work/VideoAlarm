@@ -51,6 +51,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.ImageLoader
@@ -296,7 +298,7 @@ fun AlarmItem(
 @Composable
 fun ShowDaysOfWeek(week : MutableList<Boolean>, modifier: Modifier = Modifier){
     Row(
-        //modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         for( ind in 0..6){
             Text(text = stringResource(id = daysList_en2[ind]),
@@ -304,7 +306,11 @@ fun ShowDaysOfWeek(week : MutableList<Boolean>, modifier: Modifier = Modifier){
                 modifier = Modifier
                     .padding(start = 5.dp)
                     .weight(1f),
-                fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7
+                fontSize = MaterialTheme.typography.bodySmall.fontSize*0.7,
+                maxLines = 1,                      // ★ 한 줄만 허용
+                softWrap = false,                  // ★ 줄바꿈 금지
+                overflow = TextOverflow.Clip,      // 넘치면 잘라버림 (필요하면 Ellipsis)
+                textAlign = TextAlign.Center
             )
         }
     }
